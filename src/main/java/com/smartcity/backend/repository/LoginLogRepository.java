@@ -1,0 +1,1 @@
+package com.smartcity.backend.repository; import com.smartcity.backend.entity.LoginLog; import org.springframework.data.jpa.repository.JpaRepository; public interface LoginLogRepository extends JpaRepository<LoginLog, Long> { }
