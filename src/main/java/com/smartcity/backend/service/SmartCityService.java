@@ -1,13 +1,25 @@
 package com.smartcity.backend.service;
-import com.smartcity.backend.entity.*;
-import com.smartcity.backend.repository.*;
-import com.smartcity.backend.dto.*;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.smartcity.backend.dto.AdminStats;
+import com.smartcity.backend.entity.Amenity;
+import com.smartcity.backend.entity.City;
+import com.smartcity.backend.entity.Feedback;
+import com.smartcity.backend.entity.Issue;
+import com.smartcity.backend.entity.LoginLog;
+import com.smartcity.backend.entity.User;
+import com.smartcity.backend.repository.AmenityRepository;
+import com.smartcity.backend.repository.CityRepository;
+import com.smartcity.backend.repository.FeedbackRepository;
+import com.smartcity.backend.repository.IssueRepository;
+import com.smartcity.backend.repository.LoginLogRepository;
+import com.smartcity.backend.repository.UserRepository;
 
 @Service
 public class SmartCityService {
@@ -80,11 +92,18 @@ public class SmartCityService {
     }
 
     private City resolveCity(City city) {
-        if (city == null || city.getId() == null) {
+        if (city == null) {
             throw new DataIntegrityViolationException("City is required");
         }
-        return cityRepository.findById(city.getId())
-            .orElseThrow(() -> new DataIntegrityViolationException("Invalid city id: " + city.getId()));
+        if (city.getId() != null) {
+            return cityRepository.findById(city.getId())
+                .orElseThrow(() -> new DataIntegrityViolationException("Invalid city id: " + city.getId()));
+        }
+        if (city.getName() != null && !city.getName().isBlank()) {
+            return cityRepository.findByName(city.getName())
+                .orElseThrow(() -> new DataIntegrityViolationException("Invalid city name: " + city.getName()));
+        }
+        throw new DataIntegrityViolationException("City is required");
     }
 
     private User resolveUser(User user) {
