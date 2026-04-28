@@ -1,6 +1,7 @@
 package com.smartcity.backend.service;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -8,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.smartcity.backend.dto.AdminStats;
+import com.smartcity.backend.dto.FeedbackResponseDTO;
 import com.smartcity.backend.entity.Amenity;
 import com.smartcity.backend.entity.City;
 import com.smartcity.backend.entity.Feedback;
@@ -83,6 +85,18 @@ public class SmartCityService {
     public List<LoginLog> getAllLoginLogs() { return loginLogRepository.findAll(); }
     public List<Issue> getAllIssues() { return issueRepository.findAll(); }
     public List<Feedback> getAllFeedback() { return feedbackRepository.findAll(); }
+    public List<FeedbackResponseDTO> getAllFeedbackWithUserNames() {
+        return feedbackRepository.findAll().stream()
+            .map(feedback -> new FeedbackResponseDTO(
+                feedback.getId(),
+                feedback.getComment(),
+                feedback.getRating(),
+                feedback.getUser() != null ? feedback.getUser().getId() : null,
+                feedback.getUser() != null ? feedback.getUser().getUsername() : "Anonymous",
+                feedback.getTimestamp()
+            ))
+            .collect(Collectors.toList());
+    }
     public List<User> getAllUsers() { return userRepository.findAll(); }
 
     public Issue updateIssueStatus(Long id, String status) {

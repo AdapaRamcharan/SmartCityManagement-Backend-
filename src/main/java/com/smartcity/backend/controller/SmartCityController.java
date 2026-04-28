@@ -1,19 +1,39 @@
 package com.smartcity.backend.controller;
-import com.smartcity.backend.dto.*;
-import com.smartcity.backend.entity.*;
-import com.smartcity.backend.security.JwtUtils;
-import com.smartcity.backend.service.SmartCityService;
-import com.smartcity.backend.repository.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.smartcity.backend.dto.AdminStats;
+import com.smartcity.backend.dto.FeedbackResponseDTO;
+import com.smartcity.backend.dto.JwtResponse;
+import com.smartcity.backend.dto.LoginRequest;
+import com.smartcity.backend.entity.Amenity;
+import com.smartcity.backend.entity.City;
+import com.smartcity.backend.entity.Feedback;
+import com.smartcity.backend.entity.Issue;
+import com.smartcity.backend.entity.LoginLog;
+import com.smartcity.backend.entity.User;
+import com.smartcity.backend.repository.UserRepository;
+import com.smartcity.backend.security.JwtUtils;
+import com.smartcity.backend.service.SmartCityService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+@CrossOrigin(originPatterns = {"http://localhost:*", "http://127.0.0.1:*", "https://*.vercel.app", "https://*.onrender.com"}, allowCredentials = "true")
 @RestController
 @RequestMapping("/api")
 public class SmartCityController {
@@ -84,7 +104,7 @@ public class SmartCityController {
     }
 
     @GetMapping({"/admin/feedback", "/feedback"})
-    public List<Feedback> getAllFeedback() {
-        return smartCityService.getAllFeedback();
+    public List<FeedbackResponseDTO> getAllFeedback() {
+        return smartCityService.getAllFeedbackWithUserNames();
     }
 }
